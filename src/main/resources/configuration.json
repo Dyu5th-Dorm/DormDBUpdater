@@ -1,0 +1,24 @@
+{
+  "database": {
+    "name": "",
+    "user" : "",
+    "pwd" : ""
+  },
+  "login": {
+    "id": "",
+    "pwd": "",
+    "s_smye": "",
+    "s_smty" : ""
+  },
+  "update" : {
+    "frequency" : "1d"
+  },
+  "notification" : {
+    "line_notify": {
+      "token" : ""
+    },
+    "discord" : {
+      "token" : ""
+    }
+  }
+}
