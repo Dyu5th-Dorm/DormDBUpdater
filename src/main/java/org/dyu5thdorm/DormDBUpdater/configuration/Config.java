@@ -37,7 +37,7 @@ public class Config {
     }
 
     /**
-     *
+     * Reload Configuration.
      * @throws IOException Configuration file reload Exception.
      */
     public static void reloadConfig() throws IOException {
@@ -45,7 +45,7 @@ public class Config {
     }
 
     /**
-     *
+     * Check the Database driver exists.
      * @throws ClassNotFoundException Database driver not found.
      */
     static void loadDriver() throws ClassNotFoundException {
@@ -86,7 +86,7 @@ public class Config {
     }
 
     /**
-     *
+     * Load Configuration when application execution.
      * @throws IOException Configuration File creation Exception.
      */
     static void loadConfig() throws IOException {

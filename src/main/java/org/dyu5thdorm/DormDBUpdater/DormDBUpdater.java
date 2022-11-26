@@ -12,7 +12,13 @@ public class DormDBUpdater {
    public static void main(String[] args) {
        try {
            Config.init();
-           database = new Database(Config.dataBaseParameter.dbName(), Config.dataBaseParameter.user(), Config.dataBaseParameter.pwd());
+
+           database = new Database(
+                   Config.dataBaseParameter.dbName(),
+                   Config.dataBaseParameter.user(),
+                   Config.dataBaseParameter.pwd()
+           );
+
            database.shutdown();
        } catch (SQLException | IOException | ClassNotFoundException e) {
            throw new RuntimeException(e);
