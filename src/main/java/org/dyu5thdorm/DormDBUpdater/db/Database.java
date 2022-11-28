@@ -1,16 +1,16 @@
 package org.dyu5thdorm.DormDBUpdater.db;
 
+import org.dyu5thdorm.DormDBUpdater.configuration.Config;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * <h2>To connect to database.</h2>
  */
 public class Database {
     final private String url;
-    final private Statement statement;
     final private Connection connection;
 
     /**
@@ -25,18 +25,53 @@ public class Database {
             throw new RuntimeException("Database connection failed. - Not Integrity of Database parameter.");
         }
 
-        url = String.format("jdbc:mysql://127.0.0.1:3306/%s", db);
+        url = "jdbc:mysql://127.0.0.1/";
         connection = DriverManager.getConnection(url, user, pwd);
-        statement = connection.createStatement();
+        this.checkDatabaseAndTables();
     }
 
-    /**
-     * Get the statement of database.
-     * @return Statement of database.
-     */
-    public Statement getStatement() {
-        return statement;
+    private void checkDatabaseAndTables() throws SQLException {
+        this.createDatabaseAndUse();
+        this.createStudentTable();
+        this.createRoomTable();
     }
+
+    private boolean createDatabaseAndUse() throws SQLException {
+        this.connection.prepareStatement(
+                String.format(
+                        "CREATE DATABASE IF NOT EXISTS %s;",
+                        Config.dataBaseParameter.dbName()
+                )
+        ).execute();
+
+        return this.connection.prepareStatement(
+                String.format(
+                        "use %s",
+                        Config.dataBaseParameter.dbName())
+        ).execute();
+    }
+
+    private boolean createRoomTable() throws SQLException {
+        return this.connection.prepareStatement(
+                "CREATE TABLE IF NOT EXISTS `room`(" +
+                        "room_id CHAR(6) PRIMARY KEY, " +
+                        "s_id CHAR(8), " +
+                        "FOREIGN KEY (s_id) REFERENCES student(s_id) " +
+                        "ON UPDATE CASCADE ON DELETE SET NULL);"
+        ).execute();
+    }
+
+    private boolean createStudentTable() throws SQLException {
+        return this.connection.prepareStatement(
+                "CREATE TABLE IF NOT EXISTS `student`(" +
+                        "s_id CHAR(8) PRIMARY KEY, " +
+                        "name VARCHAR(30) NOT NULL, " +
+                        "sex CHAR(1) NOT NULL, " +
+                        "major VARCHAR(20) NOT NULL, " +
+                        "citizenship VARCHAR(20) NOT NULL);"
+        ).execute();
+    }
+
 
     /**
      * Get database Connection url.
@@ -58,6 +93,5 @@ public class Database {
      */
     public void shutdown() throws SQLException {
         this.connection.close();
-        this.statement.close();
     }
 }
