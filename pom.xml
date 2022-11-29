@@ -6,7 +6,7 @@
 
     <groupId>org.dyu5thdorm</groupId>
     <artifactId>DormDBUpdater</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -17,9 +17,7 @@
         <dependency>
             <groupId>org.dyu5thdorm</groupId>
             <artifactId>RoomDataFetcher</artifactId>
-            <version>1.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/RoomDataFetcher-1.0.1.jar</systemPath>
+            <version>1.0.2</version>
         </dependency>
 
         <dependency>
@@ -36,5 +34,38 @@
         </dependency>
 
     </dependencies>
+    
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.dyu5thdorm.DormDBUpdater.DormDBUpdater</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>

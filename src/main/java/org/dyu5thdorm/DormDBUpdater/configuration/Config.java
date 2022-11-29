@@ -1,7 +1,7 @@
 package org.dyu5thdorm.DormDBUpdater.configuration;
 
 import org.dyu5thdorm.DormDBUpdater.DormDBUpdater;
-import org.dyu5thdorm.models.LoginParameter;
+import org.dyu5thdorm.RoomDataFetcher.models.DataFetchingParameter;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -16,7 +16,7 @@ public class Config {
     static String configPath; // The config file directory.
     static String configFileName; // The config file name.
     static String configFilePath; // The config file absolute path.
-    public static LoginParameter loginParameter;
+    public static DataFetchingParameter dataFetchingParameter;
     public static DataBaseParameter dataBaseParameter;
 
     static {
@@ -100,7 +100,8 @@ public class Config {
             db = jsonObject.getJSONObject("database"),
             login = jsonObject.getJSONObject("login");
 
-        String dbName = db.getString("name"),
+        String host = db.getString("host"),
+                dbName = db.getString("name"),
                 dbUser = db.getString("user"),
                 dbPwd = db.getString("pwd"),
                 loginId = login.getString("id"),
@@ -108,7 +109,7 @@ public class Config {
                 loginSmye = login.getString("s_smye"),
                 loginSmty = login.getString("s_smty");
 
-        dataBaseParameter = new DataBaseParameter(dbName,  dbUser, dbPwd);
-        loginParameter = new LoginParameter(loginId, loginPwd, loginSmye, loginSmty);
+        dataBaseParameter = new DataBaseParameter(host ,dbName,  dbUser, dbPwd);
+        dataFetchingParameter = new DataFetchingParameter(loginId, loginPwd, loginSmye, loginSmty);
     }
 }

@@ -5,21 +5,11 @@ import java.util.Objects;
 /**
  * <h2>Database connect parameter.</h2>
  */
-public record DataBaseParameter(String dbName, String user, String pwd) {
+public record DataBaseParameter(String host, String dbName, String user, String pwd) {
     /**
-     * @param dbName Connection Database name.
-     * @param user   User of Database name.
-     * @param pwd    password of Database name.
+     * Constructor
      */
-    public DataBaseParameter { }
-
-    @Override
-    public String toString() {
-        return "DataBaseConfig{" +
-                "dbName='" + dbName + '\'' +
-                ", user='" + user + '\'' +
-                ", pwd='" + pwd + '\'' +
-                '}';
+    public DataBaseParameter {
     }
 
     @Override
@@ -27,9 +17,18 @@ public record DataBaseParameter(String dbName, String user, String pwd) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (DataBaseParameter) obj;
-        return Objects.equals(this.dbName, that.dbName) &&
+        return Objects.equals(this.host, that.host) &&
+                Objects.equals(this.dbName, that.dbName) &&
                 Objects.equals(this.user, that.user) &&
                 Objects.equals(this.pwd, that.pwd);
     }
 
+    @Override
+    public String toString() {
+        return "DataBaseParameter[" +
+                "host=" + host + ", " +
+                "dbName=" + dbName + ", " +
+                "user=" + user + ", " +
+                "pwd=" + pwd + ']';
+    }
 }

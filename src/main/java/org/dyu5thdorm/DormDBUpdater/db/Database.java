@@ -25,7 +25,10 @@ public class Database {
             throw new RuntimeException("Database connection failed. - Not Integrity of Database parameter.");
         }
 
-        url = "jdbc:mysql://127.0.0.1/";
+        url = String.format(
+                "jdbc:mysql://%s/",
+                Config.dataBaseParameter.host()
+        );
         connection = DriverManager.getConnection(url, user, pwd);
         this.checkDatabaseAndTables();
     }
@@ -36,7 +39,7 @@ public class Database {
         this.createRoomTable();
     }
 
-    private boolean createDatabaseAndUse() throws SQLException {
+    private void createDatabaseAndUse() throws SQLException {
         this.connection.prepareStatement(
                 String.format(
                         "CREATE DATABASE IF NOT EXISTS %s;",
@@ -44,34 +47,38 @@ public class Database {
                 )
         ).execute();
 
-        return this.connection.prepareStatement(
+        var useDb = this.connection.prepareStatement(
                 String.format(
-                        "use %s",
+                        "use %s;",
                         Config.dataBaseParameter.dbName())
-        ).execute();
+        );
+
+        useDb.execute();
     }
 
-    private boolean createRoomTable() throws SQLException {
-        return this.connection.prepareStatement(
-                "CREATE TABLE IF NOT EXISTS `room`(" +
+    private void createRoomTable() throws SQLException {
+        var createRoomTable = this.connection.prepareStatement(
+                "CREATE TABLE IF NOT EXISTS room(" +
                         "room_id CHAR(6) PRIMARY KEY, " +
                         "s_id CHAR(8), " +
                         "FOREIGN KEY (s_id) REFERENCES student(s_id) " +
                         "ON UPDATE CASCADE ON DELETE SET NULL);"
-        ).execute();
+        );
+        
+        createRoomTable.execute();
     }
 
-    private boolean createStudentTable() throws SQLException {
-        return this.connection.prepareStatement(
-                "CREATE TABLE IF NOT EXISTS `student`(" +
+    private void createStudentTable() throws SQLException {
+        var createStudentTable = this.connection.prepareStatement(
+                ("CREATE TABLE IF NOT EXISTS student(" +
                         "s_id CHAR(8) PRIMARY KEY, " +
                         "name VARCHAR(30) NOT NULL, " +
                         "sex CHAR(1) NOT NULL, " +
                         "major VARCHAR(20) NOT NULL, " +
-                        "citizenship VARCHAR(20) NOT NULL);"
-        ).execute();
+                        "citizenship VARCHAR(20) NOT NULL);")
+        );
+        createStudentTable.execute();
     }
-
 
     /**
      * Get database Connection url.
