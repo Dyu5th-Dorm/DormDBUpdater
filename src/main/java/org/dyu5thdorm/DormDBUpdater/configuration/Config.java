@@ -18,6 +18,7 @@ public class Config {
     static String configFilePath; // The config file absolute path.
     public static DataFetchingParameter dataFetchingParameter;
     public static DataBaseParameter dataBaseParameter;
+    public static String updateFrequency;
 
     static {
         currentPath = System.getProperty("user.dir");
@@ -63,7 +64,7 @@ public class Config {
         if (configFile.exists() || directory.exists()) return;
 
         if (directory.mkdirs() && configFile.createNewFile()) {
-            System.out.println("Configuration generate successful.");
+            DormDBUpdater.logger.info("Configuration generate successfully.");
         }
 
         dumpResource(configFile);
@@ -83,6 +84,7 @@ public class Config {
 
         inputStream.close();
         outputStream.close();
+        DormDBUpdater.logger.info("Configuration dump to 'DormDBUpdater/configuration.json' successfully.");
     }
 
     /**
@@ -109,7 +111,10 @@ public class Config {
                 loginSmye = login.getString("s_smye"),
                 loginSmty = login.getString("s_smty");
 
+        updateFrequency = jsonObject.getJSONObject("update").getString("frequency");
         dataBaseParameter = new DataBaseParameter(host ,dbName,  dbUser, dbPwd);
         dataFetchingParameter = new DataFetchingParameter(loginId, loginPwd, loginSmye, loginSmty);
+
+        DormDBUpdater.logger.info("The configuration node was loaded successfully.");
     }
 }

@@ -1,9 +1,11 @@
 package org.dyu5thdorm.DormDBUpdater.db;
 
+import org.dyu5thdorm.DormDBUpdater.DormDBUpdater;
 import org.dyu5thdorm.DormDBUpdater.configuration.Config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -30,6 +32,7 @@ public class Database {
                 Config.dataBaseParameter.host()
         );
         connection = DriverManager.getConnection(url, user, pwd);
+        DormDBUpdater.logger.info("Database was connected successfully.");
         this.checkDatabaseAndTables();
     }
 
@@ -47,20 +50,26 @@ public class Database {
                 )
         ).execute();
 
-        var useDb = this.connection.prepareStatement(
+        PreparedStatement useDb = this.connection.prepareStatement(
                 String.format(
                         "use %s;",
                         Config.dataBaseParameter.dbName())
         );
 
         useDb.execute();
+        DormDBUpdater.logger.info(
+                String.format(
+                        "Using database `%s`.",
+                        Config.dataBaseParameter.dbName()
+                )
+        );
     }
 
     private void createRoomTable() throws SQLException {
-        var createRoomTable = this.connection.prepareStatement(
+        PreparedStatement createRoomTable = this.connection.prepareStatement(
                 "CREATE TABLE IF NOT EXISTS room(" +
                         "room_id CHAR(6) PRIMARY KEY, " +
-                        "s_id CHAR(8), " +
+                        "s_id CHAR(8) UNIQUE, " +
                         "FOREIGN KEY (s_id) REFERENCES student(s_id) " +
                         "ON UPDATE CASCADE ON DELETE SET NULL);"
         );
@@ -100,5 +109,6 @@ public class Database {
      */
     public void shutdown() throws SQLException {
         this.connection.close();
+        DormDBUpdater.logger.info("Database connection closed...");
     }
 }

@@ -10,13 +10,17 @@ import java.sql.SQLException;
 public class StudentRepository implements DormitoryRepository<Student> {
     @Override
     public boolean exists(Student student) {
+        return existsByStudentId(student.studentId());
+    }
+
+    public boolean existsByStudentId(String sId) {
         try {
             PreparedStatement checkStudent = DormDBUpdater.database
                     .getConnection()
                     .prepareStatement(
                             "SELECT s_id FROM student WHERE s_id = ?;"
                     );
-            checkStudent.setString(1, student.studentId());
+            checkStudent.setString(1, sId);
             return checkStudent.executeQuery().next();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -25,6 +29,8 @@ public class StudentRepository implements DormitoryRepository<Student> {
 
     @Override
     public void insert(Student student) {
+        if (student == null) return;
+
         if (!exists(student)) {
             try {
                 PreparedStatement insertStudent = DormDBUpdater.database
@@ -41,6 +47,10 @@ public class StudentRepository implements DormitoryRepository<Student> {
                 insertStudent.setString(5, student.citizenship());
 
                 insertStudent.execute();
+
+                DormDBUpdater.logger.info(
+                        String.format("Insert student data %s successfully.", student)
+                );
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -64,6 +74,10 @@ public class StudentRepository implements DormitoryRepository<Student> {
             replaceStudent.setString(5, student.studentId());
 
             replaceStudent.execute();
+
+            DormDBUpdater.logger.info(
+                    String.format("Update student data %s successfully.", student)
+            );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -72,6 +86,11 @@ public class StudentRepository implements DormitoryRepository<Student> {
     @Override
     public void delete(Student student) {
         if (!exists(student)) return;
+        deleteByStudentId(student.studentId());
+    }
+
+    public void deleteByStudentId(String sId) {
+        if (!existsByStudentId(sId)) return;
 
         try {
             PreparedStatement deleteStudent = DormDBUpdater.database
@@ -79,15 +98,19 @@ public class StudentRepository implements DormitoryRepository<Student> {
                     .prepareStatement(
                             "DELETE FROM student WHERE s_id = ?;"
                     );
-            deleteStudent.setString(1, student.studentId());
+            deleteStudent.setString(1, sId);
             deleteStudent.execute();
+
+            DormDBUpdater.logger.info(
+                    String.format("Delete student data by student_id %s successfully.", sId)
+            );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     private boolean hasStudentDataChanged(Student student) {
-        if (student == null) return true;
+        if (student == null) return false;
 
         try {
             PreparedStatement getStudent = DormDBUpdater.database

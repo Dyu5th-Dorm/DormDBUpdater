@@ -37,6 +37,12 @@ public class RoomRepository implements DormitoryRepository<Room> {
                 insertRoom.setString(1, room.roomId());
                 insertStudent(insertRoom, 2, room.student());
                 insertRoom.execute();
+
+                DormDBUpdater.logger.info(
+                        String.format(
+                                "Insert room data %s successfully.", room
+                        )
+                );
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -56,6 +62,12 @@ public class RoomRepository implements DormitoryRepository<Room> {
             insertStudent(replaceStudent, 1, room.student());
             replaceStudent.setString(2, room.roomId());
             replaceStudent.execute();
+
+            DormDBUpdater.logger.info(
+                    String.format(
+                            "Update room data %s successfully.", room
+                    )
+            );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -74,30 +86,44 @@ public class RoomRepository implements DormitoryRepository<Room> {
                     );
             deleteRoom.setString(1, room.roomId());
             deleteRoom.execute();
+
+            DormDBUpdater.logger.info(
+                    String.format(
+                            "Delete room data %s successfully.", room
+                    )
+            );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     private boolean isDifferentStudent(Room room) {
-        if (room.student() == null) return true;
-
         try {
-            String currentStudent = room.student().studentId();
+            String currentStudent = room.student() == null ?
+                    null :
+                    room.student().studentId();
 
             PreparedStatement getRoomId = DormDBUpdater.database
                     .getConnection()
                     .prepareStatement(
-                            "SELECT * FROM room where room_id = ?;"
+                            "SELECT s_id FROM room where room_id = ?;"
                     );
             getRoomId.setString(1, room.roomId());
             ResultSet r = getRoomId.executeQuery();
-            r.next();
+
+            if (!r.next()) return false; // has not select any room return false
             String inDBStudent = r.getString(1);
-            return !(currentStudent.equals(inDBStudent));
+
+            return !isSame(inDBStudent, currentStudent);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isSame(String a, String b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
     }
 
     private void insertStudent(PreparedStatement p, int index ,Student student) throws SQLException {
