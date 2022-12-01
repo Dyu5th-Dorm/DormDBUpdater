@@ -8,11 +8,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class StudentRepository implements DormitoryRepository<Student> {
+    /**
+     * Check if this `student s1` exists on `student r2` table.
+     * @param student To be checked student instance.
+     * @return Does instance `student s1` exists in `student s2` table?
+     */
     @Override
     public boolean exists(Student student) {
         return existsByStudentId(student.studentId());
     }
 
+    /**
+     * Same with exists(Student).
+     * @param sId Student id.
+     * @return Does instance `student s1` exists in `student s2` table?
+     */
     public boolean existsByStudentId(String sId) {
         try {
             PreparedStatement checkStudent = DormDBUpdater.database
@@ -27,6 +37,10 @@ public class StudentRepository implements DormitoryRepository<Student> {
         }
     }
 
+    /**
+     * Insert instance `student s1` to `student s2` table if !exists(s1)
+     * @param student `Student r1` instance of to be inserted to `Student r2`.
+     */
     @Override
     public void insert(Student student) {
         if (student == null) return;
@@ -59,6 +73,10 @@ public class StudentRepository implements DormitoryRepository<Student> {
         }
     }
 
+    /**
+     * Update student of this `student s1` instance if r1 in `student s2` table data is changed.
+     * @param student `Room r1` instance of to be updated to `room r2`.
+     */
     @Override
     public void update(Student student) {
         try {
@@ -83,12 +101,20 @@ public class StudentRepository implements DormitoryRepository<Student> {
         }
     }
 
+    /**
+     * Delete `student s1` from `student s2` table.
+     * @param student `student s1` instance of to be deleted student from `student s2` table.
+     */
     @Override
     public void delete(Student student) {
         if (!exists(student)) return;
         deleteByStudentId(student.studentId());
     }
 
+    /**
+     * Same with delete(Student).
+     * @param sId student id of to be deleted student from `student s2` table.
+     */
     public void deleteByStudentId(String sId) {
         if (!existsByStudentId(sId)) return;
 
@@ -109,6 +135,11 @@ public class StudentRepository implements DormitoryRepository<Student> {
         }
     }
 
+    /**
+     * To check if data of `student s1` from `student s2` table changed.
+     * @param student To be checked student.
+     * @return Does data of `student s1` from `student s2` table changed.
+     */
     private boolean hasStudentDataChanged(Student student) {
         if (student == null) return false;
 

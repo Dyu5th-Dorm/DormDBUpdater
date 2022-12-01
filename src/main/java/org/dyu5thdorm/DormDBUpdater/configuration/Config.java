@@ -61,7 +61,7 @@ public class Config {
         File directory = new File(configPath),
                 configFile = new File(configFilePath);
 
-        if (configFile.exists() || directory.exists()) return;
+        if (configFile.exists() && directory.exists()) return;
 
         if (directory.mkdirs() && configFile.createNewFile()) {
             DormDBUpdater.logger.info("Configuration generate successfully.");

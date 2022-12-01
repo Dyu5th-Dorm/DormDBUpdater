@@ -9,7 +9,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+/**
+ * Room repository be used to operate room table of database.
+ */
 public class RoomRepository implements DormitoryRepository<Room> {
+
+    /**
+     * Check if this `room r1` exists on `room r2` table.
+     * @param room To be checked room instance.
+     * @return Does instance `room r1` exists in `room r2` table?
+     */
     @Override
     public boolean exists(Room room) {
         try {
@@ -25,6 +34,10 @@ public class RoomRepository implements DormitoryRepository<Room> {
         }
     }
 
+    /**
+     * Insert instance `room r1` to `room r2` table if !exists(r1)
+     * @param room `Room r1` instance of to be inserted to `room r2`.
+     */
     @Override
     public void insert(Room room) {
         if (!exists(room)) {
@@ -51,6 +64,11 @@ public class RoomRepository implements DormitoryRepository<Room> {
         }
     }
 
+    /**
+     * Update student of this `room r1` instance if r1 in `room r2` table and
+     * living in r1 student data be updated.
+     * @param room` Room r1` instance of to be updated to `room r2`.
+     */
     @Override
     public void update(Room room) {
         try {
@@ -73,6 +91,10 @@ public class RoomRepository implements DormitoryRepository<Room> {
         }
     }
 
+    /**
+     * Delete student of `room r1` from `room r2` table.
+     * @param room living in `Room r1` instance of to be deleted student from `Room r2` table.
+     */
     @Deprecated
     @Override
     public void delete(Room room) {
@@ -97,6 +119,11 @@ public class RoomRepository implements DormitoryRepository<Room> {
         }
     }
 
+    /**
+     * Check if student of `room r1` instance from student of living in `room r2` table different.
+     * @param room To be checked student of room instance.
+     * @return Does student of `room r1` instance from student of living in `room r2` table different?
+     */
     private boolean isDifferentStudent(Room room) {
         try {
             String currentStudent = room.student() == null ?
@@ -120,14 +147,27 @@ public class RoomRepository implements DormitoryRepository<Room> {
         }
     }
 
+    /**
+     * To Check data of get from database same.
+     * @param a data1
+     * @param b data2
+     * @return Does data of get from database same?
+     */
     private boolean isSame(String a, String b) {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
         return a.equals(b);
     }
 
+    /**
+     * If student id is null set student of living room to null.
+     * @param p PreparedStatement.
+     * @param index To be Replaced string Location.
+     * @param student Student instance.
+     * @throws SQLException When set null or string exception.
+     */
     private void insertStudent(PreparedStatement p, int index ,Student student) throws SQLException {
-        if (student== null) {
+        if (student == null) {
             p.setNull(index, Types.CHAR);
         } else {
             p.setString(index, student.studentId());

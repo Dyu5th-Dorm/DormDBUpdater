@@ -12,7 +12,6 @@ import java.sql.SQLException;
  * <h2>To connect to database.</h2>
  */
 public class Database {
-    final private String url;
     final private Connection connection;
 
     /**
@@ -27,21 +26,28 @@ public class Database {
             throw new RuntimeException("Database connection failed. - Not Integrity of Database parameter.");
         }
 
-        url = String.format(
+        String url = String.format(
                 "jdbc:mysql://%s/",
                 Config.dataBaseParameter.host()
         );
-        connection = DriverManager.getConnection(url, user, pwd);
+        this.connection = DriverManager.getConnection(url, user, pwd);
         DormDBUpdater.logger.info("Database was connected successfully.");
         this.checkDatabaseAndTables();
     }
 
+    /**
+     * Check all table and database that application needed when run application.
+     */
     private void checkDatabaseAndTables() throws SQLException {
         this.createDatabaseAndUse();
         this.createStudentTable();
         this.createRoomTable();
     }
 
+    /**
+     * Create database and use this database if database not exists.
+     * @throws SQLException When create database error.
+     */
     private void createDatabaseAndUse() throws SQLException {
         this.connection.prepareStatement(
                 String.format(
@@ -65,6 +71,10 @@ public class Database {
         );
     }
 
+    /**
+     * Create room database if room table not exists.
+     * @throws SQLException When create database error.
+     */
     private void createRoomTable() throws SQLException {
         PreparedStatement createRoomTable = this.connection.prepareStatement(
                 "CREATE TABLE IF NOT EXISTS room(" +
@@ -77,8 +87,12 @@ public class Database {
         createRoomTable.execute();
     }
 
+    /**
+     * Create student database if student table not exists.
+     * @throws SQLException When create database error.
+     */
     private void createStudentTable() throws SQLException {
-        var createStudentTable = this.connection.prepareStatement(
+        PreparedStatement createStudentTable = this.connection.prepareStatement(
                 ("CREATE TABLE IF NOT EXISTS student(" +
                         "s_id CHAR(8) PRIMARY KEY, " +
                         "name VARCHAR(30) NOT NULL, " +
@@ -90,17 +104,25 @@ public class Database {
     }
 
     /**
-     * Get database Connection url.
-     * @return database Connection url.
-     */
-    public String getUrl() { return url; }
-
-    /**
      * Get Connection of database.
      * @return Connection of database
      */
     public Connection getConnection() {
-        return connection;
+        try {
+            this.connection.prepareStatement(
+                    String.format(
+                            "use %s;", Config.dataBaseParameter.dbName()
+                    )
+            ).execute();
+        } catch (SQLException e) {
+            try {
+                checkDatabaseAndTables();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        return this.connection;
     }
 
     /**

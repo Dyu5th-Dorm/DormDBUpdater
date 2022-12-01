@@ -12,7 +12,7 @@
     "s_smty" : ""
   },
   "update" : {
-    "frequency" : "1d"
+    "frequency" : "h"
   },
   "notification" : {
     "line_notify": {
