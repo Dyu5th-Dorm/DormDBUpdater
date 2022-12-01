@@ -21,7 +21,7 @@ public class UpdateDBCommand implements Command{
     public void execute() {
         logger.info("Database update starts now...");
 
-        List<Room> rooms = null;
+        List<Room> rooms;
         try {
             rooms = RoomDataFetcher.getData(Config.dataFetchingParameter);
         } catch (IOException e) {
@@ -29,7 +29,6 @@ public class UpdateDBCommand implements Command{
         }
 
         for (Room room : rooms) {
-            if (room.student() == null) continue;
             studentRepository.insert(room.student());
             roomRepository.insert(room);
         }
