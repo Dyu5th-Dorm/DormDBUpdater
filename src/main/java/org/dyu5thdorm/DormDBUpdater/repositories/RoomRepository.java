@@ -71,6 +71,8 @@ public class RoomRepository implements DormitoryRepository<Room> {
      */
     @Override
     public void update(Room room) {
+        ifExistsSetNull(room);
+
         try {
             PreparedStatement replaceStudent = DormDBUpdater.database
                     .getConnection()
@@ -171,6 +173,25 @@ public class RoomRepository implements DormitoryRepository<Room> {
             p.setNull(index, Types.CHAR);
         } else {
             p.setString(index, student.studentId());
+        }
+    }
+
+    private void ifExistsSetNull(Room room) {
+        try {
+            if (room.student() == null) return;
+            if (!exists(room)) return;
+
+            PreparedStatement setToNull = DormDBUpdater.database
+                    .getConnection()
+                    .prepareStatement(
+                            "UPDATE room SET s_id = ? where s_id = ?;"
+                    );
+
+            setToNull.setNull(1, Types.CHAR);
+            setToNull.setString(2, room.student().studentId());
+            setToNull.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
