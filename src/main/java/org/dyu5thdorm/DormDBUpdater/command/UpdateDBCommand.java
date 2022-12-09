@@ -29,6 +29,9 @@ public class UpdateDBCommand implements Command{
 
         try {
             fetchedRooms = RoomDataFetcher.getData(Config.dataFetchingParameter);
+            logger.info(
+                    String.format("Room List length : %d", fetchedRooms.size())
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
