@@ -6,6 +6,7 @@ import org.dyu5thdorm.DormDBUpdater.command.StopCommand;
 import org.dyu5thdorm.DormDBUpdater.command.UpdateDBCommand;
 import org.dyu5thdorm.DormDBUpdater.configuration.Config;
 import org.dyu5thdorm.DormDBUpdater.db.Database;
+import org.dyu5thdorm.DormDBUpdater.repositories.DormitoryRepository;
 import org.dyu5thdorm.DormDBUpdater.repositories.RoomRepository;
 import org.dyu5thdorm.DormDBUpdater.repositories.StudentRepository;
 import org.dyu5thdorm.DormDBUpdater.thread.AutoUpdateDBThread;
@@ -22,8 +23,7 @@ import java.util.HashMap;
 public class DormDBUpdater {
     public static Logger logger;
     public static Database database;
-    public static RoomRepository roomRepository;
-    public static StudentRepository studentRepository;
+    public static DormitoryRepository roomRepository, studentRepository;
     public static HashMap<String, Command> commands;
     public static Thread receiveCommandThread, autoUpdateDBThread;
 
