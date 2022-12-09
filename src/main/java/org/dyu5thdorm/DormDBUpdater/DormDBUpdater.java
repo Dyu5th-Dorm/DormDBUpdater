@@ -29,6 +29,7 @@ public class DormDBUpdater {
 
     static {
         logger = LoggerFactory.getLogger(DormDBUpdater.class);
+        commands = new HashMap<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         logger.info(
                 String.format(
@@ -71,7 +72,6 @@ public class DormDBUpdater {
     }
 
     private static void registerCommands() {
-        commands = new HashMap<>();
         commands.put("update", new UpdateDBCommand());
         commands.put("reload", new ReloadCommand());
         commands.put("stop", new StopCommand());
