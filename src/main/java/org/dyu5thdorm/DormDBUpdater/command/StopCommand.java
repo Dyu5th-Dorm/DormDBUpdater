@@ -4,10 +4,19 @@ import org.dyu5thdorm.DormDBUpdater.DormDBUpdater;
 
 import java.sql.SQLException;
 
+import static org.dyu5thdorm.DormDBUpdater.DormDBUpdater.logger;
+
 /**
  * Stop command.
  */
 public class StopCommand implements Command {
+    public StopCommand() {
+        logger.info(
+                String.format(
+                        "%s is ready.", this.getClass().getSimpleName()
+                )
+        );
+    }
 
     /**
      * Stop this application.

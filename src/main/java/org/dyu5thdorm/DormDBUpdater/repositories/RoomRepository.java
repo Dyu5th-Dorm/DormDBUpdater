@@ -94,7 +94,8 @@ public class RoomRepository implements DormitoryRepository<Room> {
     }
 
     /**
-     * Delete student of `room r1` from `room r2` table.
+     * Delete room.
+     * Deprecated because room are fixed.
      * @param room living in `Room r1` instance of to be deleted student from `Room r2` table.
      */
     @Deprecated

@@ -5,7 +5,6 @@ import org.dyu5thdorm.RoomDataFetcher.RoomDataFetcher;
 import org.dyu5thdorm.RoomDataFetcher.models.Room;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.dyu5thdorm.DormDBUpdater.DormDBUpdater.*;
@@ -14,10 +13,12 @@ import static org.dyu5thdorm.DormDBUpdater.DormDBUpdater.*;
  * Update command.
  */
 public class UpdateDBCommand implements Command{
-    private List<Room> fetchedRooms;
-
     public UpdateDBCommand() {
-        fetchedRooms = new ArrayList<>();
+        logger.info(
+                String.format(
+                        "%s is ready.", this.getClass().getSimpleName()
+                )
+        );
     }
 
     /**
@@ -28,20 +29,24 @@ public class UpdateDBCommand implements Command{
         logger.info("Database update starts now...");
 
         try {
-            fetchedRooms = RoomDataFetcher.getData(Config.dataFetchingParameter);
-            logger.info(
-                    String.format("Room List length : %d", fetchedRooms.size())
+            List<Room> fetchedRooms = RoomDataFetcher.getData(
+                    Config.dataFetchingParameter
             );
+
+            logger.info(
+                    String.format(
+                            "Get %d room data from RoomDataFetcher", fetchedRooms.size()
+                    )
+            );
+
+            for (Room room : fetchedRooms) {
+                studentRepository.insert(room.student());
+                roomRepository.insert(room);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        for (Room room : fetchedRooms) {
-            studentRepository.insert(room.student());
-            roomRepository.insert(room);
-        }
-
-        fetchedRooms.clear();
         logger.info("Database successfully updated!");
     }
 

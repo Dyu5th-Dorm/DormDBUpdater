@@ -39,16 +39,12 @@ public class DormDBUpdater {
         );
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        try {
+    public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException, SQLException {
             Config.init();
             registerCommands();
             connectToDatabase();
             initRepositories();
             initThreads();
-       } catch (SQLException | IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-       }
     }
 
     private static void initThreads() {
